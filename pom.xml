@@ -10,10 +10,10 @@
   <version>1.0.0</version>
 
 <distributionManagement>
-  <Repository>
+  <repository>
     <id>nexus-releases</id>
     <url>http://nexus:8081/repository/rushdah-releases/</url>
-  </Repository>
+  </repository>
 </distributionManagement>
 
 </project>
