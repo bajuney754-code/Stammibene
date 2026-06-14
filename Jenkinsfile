@@ -2,7 +2,7 @@ pipeline {
     // This tells Jenkins to run this build on any available worker machine
     agent any
 
-    tools{
+    tools {
 	dockerTool 'myDocker'
     }
 
