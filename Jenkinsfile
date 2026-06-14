@@ -3,7 +3,7 @@ pipeline {
     
     stages {
         stage('Checkout') {
-            steps { git https://github.com/bajuney754-code/Stammibene.git' }
+            steps { git 'https://github.com/bajuney754-code/Stammibene.git' }
         }
         
         stage('Build with Maven') {
