@@ -4,10 +4,11 @@ pipeline {
     stages {
         stage('Checkout') {
             steps { 
-                git 'https://github.com/bajuney754-code/Stammibene.git' 
+                git branch: 'main', url: 'https://github.com/bajuney754-code/Stammibene.git' 
             }
         }
         
+     }
         stage('Build with Maven') {
             steps { 
                 sh 'mvn clean package -DskipTests' 
