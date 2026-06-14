@@ -1,15 +1,9 @@
 pipeline {
-    // This tells Jenkins to run this build on any available worker machine
     agent any
-
-    tools {
-	dockerTool 'myDocker'
-    }
 
     stages {
         stage('Checkout Code') {
             steps {
-                // Pulls down your source code containing the pom.xml and Dockerfile
                 checkout scm
             }
         }
@@ -23,50 +17,35 @@ pipeline {
                         returnStdout: true
                     ).trim()
                     
-                    // Save it directly to the env object so the shell block below can read it
-                    env.IMAGE_TAG = appVersion
-                    echo "Building image with tag: ${env.IMAGE_TAG}"
-                }
+                    echo "Building image version: ${appVersion}"
+                    
+                    // 2. Use the native Jenkins Docker DSL plugin to build your Dockerfile
+                    // Replace 'your-app' with your actual Docker Hub repository name
+                    def dockerImage = docker.build("your-app:${appVersion}", ".")
 
-                // 2. Build + Push using Jenkins credentials
-                withCredentials([usernamePassword(
-                    credentialsId: 'docker-registry-creds', // Must match the ID created in your Jenkins UI
-                    usernameVariable: 'DOCKER_USER', 
-                    passwordVariable: 'DOCKER_PASS'
-                )]) {
-                    // Triple double-quotes allow Jenkins to inject the $IMAGE_TAG variable
-
-		    withEnv(["PATH+DOCKER=${tool 'myDocker'}/bin"]){
-                    sh """
-                        # Login to Docker Hub (omitting the domain defaults to docker.io)
-                        echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin
+                    // 3. Connect to Docker Hub registry securely and push the layers
+                    // 'docker-registry-creds' must match the exact ID created in your Jenkins UI
+                    docker.withRegistry('https://index.docker.io/v1/', 'docker-registry-creds') {
                         
-                        # Build image (Replace 'your-app' with your actual Docker Hub repository name)
-                        docker build -t \$DOCKER_USER/blabla:\$IMAGE_TAG .
+                        // This handles the login and pushing automatically!
+                        dockerImage.push()
                         
-                        # Push image
-                        docker push \$DOCKER_USER/blabla:\$IMAGE_TAG
-                        
-                        # Tag as latest for production/stable releases only
-                        if [[ "\$IMAGE_TAG" != *SNAPSHOT* ]]; then
-                            docker tag \$DOCKER_USER/blabla:\$IMAGE_TAG \$DOCKER_USER/your-app:latest
-                            docker push \$DOCKER_USER/blabla:latest
-                        fi
-                    """
-		   }
+                        // Tag and push as 'latest' for non-SNAPSHOT versions
+                        if (!appVersion.contains("SNAPSHOT")) {
+                            dockerImage.push('latest')
+                        }
+                    }
                 }
             }
             post {
                 always {
-		     withEnv(["PATH+DOCKER=${tool 'myDocker'}/bin"]) {
-                    // Clears credentials from the local Jenkins worker engine memory
-                    sh 'docker logout || true'
-                    
-                    // Optional: Cleans up local images to save server disk space
-                    sh "docker rmi \$DOCKER_USER/blabla:\$IMAGE_TAG || true"
-                 }
-             }
-         }
-      }
-  }
+                    script {
+                        echo "Cleaning workspace footprint..."
+                        // Local cleanup script
+                    }
+                }
+            }
+        }
+    }
 }
+
