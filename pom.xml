@@ -7,13 +7,13 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.blabla</groupId>
   <artifactId>blabla</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0</version>
 
 <distributionManagement>
-  <snapshotRepository>
-    <id>snapshots</id>
-    <url>http://nexus:8081/repository/maven-snapshots/</url>
-  </snapshotRepository>
+  <Repository>
+    <id>nexus-releases</id>
+    <url>http://nexus:8081/repository/rushdah-releases/</url>
+  </Repository>
 </distributionManagement>
 
 </project>

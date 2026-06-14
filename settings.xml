@@ -1,9 +1,9 @@
 <settings>
   <servers>
     <server>
-      <id>nexus-snapshots</id>
+      <id>nexus-releases</id>
       <username>admin</username>
-      <password>T0day2026</password>
+      <password>admin123</password>
     </server>
   </servers>
 </settings>
