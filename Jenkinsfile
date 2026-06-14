@@ -35,6 +35,8 @@ pipeline {
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
                     // Triple double-quotes allow Jenkins to inject the $IMAGE_TAG variable
+
+		    withEnv(["PATH+DOCKER=${tool 'myDocker'}/bin"]){
                     sh """
                         # Login to Docker Hub (omitting the domain defaults to docker.io)
                         echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin
@@ -51,17 +53,20 @@ pipeline {
                             docker push \$DOCKER_USER/blabla:latest
                         fi
                     """
+		   }
                 }
             }
             post {
                 always {
+		     withEnv(["PATH+DOCKER=${tool 'myDocker'}/bin"]) {
                     // Clears credentials from the local Jenkins worker engine memory
                     sh 'docker logout || true'
                     
                     // Optional: Cleans up local images to save server disk space
                     sh "docker rmi \$DOCKER_USER/blabla:\$IMAGE_TAG || true"
-                }
-            }
-        }
-    }
+                 }
+             }
+         }
+      }
+  }
 }
