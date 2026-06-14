@@ -6,7 +6,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.yourapp</groupId>
-  <artifactId>your-app</artifactId>
+  <artifactId>blabla</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 
 <distributionManagement>
