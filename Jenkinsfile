@@ -43,15 +43,15 @@ pipeline {
                         echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
                         
                         # Build image: docker.io/username/repo:tag
-                        docker build -t $DOCKER_USER/your-app:$IMAGE_TAG .
+                        docker build -t $DOCKER_USER/blabla:$IMAGE_TAG .
                         
                         # Push image
-                        docker push $DOCKER_USER/your-app:$IMAGE_TAG
+                        docker push $DOCKER_USER/blabla:$IMAGE_TAG
                         
                         # Tag as latest for release versions only
                         if [[ "$IMAGE_TAG" != *SNAPSHOT* ]]; then
-                            docker tag $DOCKER_USER/your-app:$IMAGE_TAG $DOCKER_USER/your-app:latest
-                            docker push $DOCKER_USER/your-app:latest
+                            docker tag $DOCKER_USER/blabla:$IMAGE_TAG $DOCKER_USER/blabla:latest
+                            docker push $DOCKER_USER/blabla:latest
                         fi
                     '''
                 }
