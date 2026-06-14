@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps { 
-                git 'https://github.com/bajuney754-code/Stammibene.git' 
+                git 'https://github.com/you/repo.git' 
             }
         }
         
